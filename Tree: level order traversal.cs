@@ -1,0 +1,73 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
+class Solution {
+    
+
+    static void Main(String[] args) {
+        /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution */
+        int n = int.Parse(Console.ReadLine());
+        string valuesStr = Console.ReadLine();
+        IEnumerable<int> valuesInt = valuesStr.Split(" ").Select(x => int.Parse(x));
+        Tree tree = new();
+        foreach(int item in valuesInt){
+            tree.Insert(item);
+        }        
+    Console.WriteLine(
+       string.Join(" ",tree.BreadtFirstTraversal()));
+    }  
+    
+}
+class Tree{
+    public Node root {get;set;} = null;
+
+    public void Insert(int data){
+        this.root = InsertRecursive(data,this.root);
+    }    
+
+    public Node InsertRecursive(int data, Node node){
+        
+        if(node == null){
+            node = new Node(data);
+        }
+
+        if(data < node.data){
+           node.left = InsertRecursive(data,node.left);
+        }else if(data > node.data){
+           node.right = InsertRecursive(data,node.right);
+        }
+        
+        return node;
+    }
+    
+    public List<int> BreadtFirstTraversal(){
+        Queue<Node> queue = new();
+        List<int> result = new();
+        if(this.root != null) queue.Enqueue(this.root);
+        while(queue.Count > 0){
+           Node item = queue.Dequeue();
+           result.Add(item.data);
+            if(item.left != null) queue.Enqueue(item.left);
+            if(item.right != null) queue.Enqueue(item.right);
+        }
+        
+        return result;
+    }
+
+}
+
+class Node{
+    public int data {get;private set;}
+    public Node left {get; set;} = null;
+    public Node right {get; set;}=null;
+    public Node(){}
+    public Node(int data){
+        this.data = data;
+    }
+    public Node(int data, Node left, Node right){
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+}
